@@ -1,12 +1,9 @@
 import React from "react";
 import Onboarding from "../microui/Onboarding";
-
+import useAuth from "../hooks/useAuth";
 const Dashboard = () => {
-  return (
-    <div>
-      <Onboarding />
-    </div>
-  );
+  const { user } = useAuth();
+  return <div>{user && <Onboarding />}</div>;
 };
 
 export default Dashboard;

@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { auth } from "../firebase/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import useAuth from "../hooks/useAuth";
+import { FcGoogle } from "react-icons/fc";
+import { Button, Center, Text } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 const Login = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) navigate("/");
+  });
+
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     // provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
@@ -37,17 +46,21 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <button
-        onClick={() => signInWithGoogle()}
-        style={{ display: user ? "none" : "" }}
-      >
-        Login
-      </button>
-      <button onClick={() => signOut()} style={{ display: user ? "" : "none" }}>
-        Logout
-      </button>
-    </div>
+    <Center p={8}>
+      {!user && (
+        <Button
+          w={"full"}
+          maxW={"md"}
+          variant={"outline"}
+          onClick={() => signInWithGoogle()}
+          leftIcon={<FcGoogle />}
+        >
+          <Center>
+            <Text>Sign in with Google</Text>
+          </Center>
+        </Button>
+      )}
+    </Center>
   );
 };
 

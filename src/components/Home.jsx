@@ -1,7 +1,14 @@
 import React from "react";
+import useAuth from "../hooks/useAuth";
 
 const Home = () => {
-  return <div>Home</div>;
+  const { user } = useAuth();
+  return (
+    <div>
+      Home
+      {JSON.stringify(user)}
+    </div>
+  );
 };
 
 export default Home;

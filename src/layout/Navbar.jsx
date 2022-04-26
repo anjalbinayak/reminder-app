@@ -19,6 +19,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import useAuth from "../hooks/useAuth";
 
 const Links = [
   { name: "Dashboard", route: "/dashboard" },
@@ -43,6 +44,7 @@ const NavLink = ({ children }) => (
 export default function Navbar({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
+  const { user } = useAuth();
 
   return (
     <>
@@ -62,18 +64,60 @@ export default function Navbar({ children }) {
               spacing={4}
               display={{ base: "none", md: "flex" }}
             >
-              {Links.map((link) => (
-                <NavLink key={link.name}>
-                  <RouterLink to={link.route}>{link.name}</RouterLink>
-                </NavLink>
-              ))}
+              {user &&
+                Links.map((link) => (
+                  <NavLink key={link.name}>
+                    <RouterLink to={link.route}>{link.name}</RouterLink>
+                  </NavLink>
+                ))}
             </HStack>
           </HStack>
-          <Flex alignItems={"center"}>
-            <HStack spacing={5}>
-              <Button onClick={toggleColorMode}>
-                {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-              </Button>
+          {user && (
+            <Flex alignItems={"center"}>
+              <HStack spacing={5}>
+                <Button onClick={toggleColorMode}>
+                  {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+                </Button>
+
+                <RouterLink to="reminders/add">
+                  <Button
+                    variant={"solid"}
+                    colorScheme={"teal"}
+                    size={"sm"}
+                    mr={4}
+                    leftIcon={<AddIcon />}
+                  >
+                    Reminder
+                  </Button>
+                </RouterLink>
+
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rounded={"full"}
+                    variant={"link"}
+                    cursor={"pointer"}
+                    minW={0}
+                  >
+                    <Avatar size={"sm"} src={user.photoURL} />
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem justifyContent={"center"}>
+                      <b>{user.displayName}</b>
+                    </MenuItem>
+                    <MenuItem justifyContent={"center"}>=</MenuItem>
+
+                    <MenuItem justifyContent={"center"}>
+                      <b>AWESOME</b>
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              </HStack>
+            </Flex>
+          )}
+
+          {!user && (
+            <RouterLink to="login">
               <Button
                 variant={"solid"}
                 colorScheme={"teal"}
@@ -81,33 +125,10 @@ export default function Navbar({ children }) {
                 mr={4}
                 leftIcon={<AddIcon />}
               >
-                Reminder
+                Sign In
               </Button>
-
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  rounded={"full"}
-                  variant={"link"}
-                  cursor={"pointer"}
-                  minW={0}
-                >
-                  <Avatar
-                    size={"sm"}
-                    src={
-                      "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                    }
-                  />
-                </MenuButton>
-                <MenuList>
-                  <MenuItem>You</MenuItem>
-                  <MenuItem>Are</MenuItem>
-                  <MenuDivider />
-                  <MenuItem>Awesome</MenuItem>
-                </MenuList>
-              </Menu>
-            </HStack>
-          </Flex>
+            </RouterLink>
+          )}
         </Flex>
 
         {isOpen ? (
