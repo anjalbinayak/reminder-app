@@ -1,7 +1,12 @@
 import React from "react";
+import Onboarding from "../microui/Onboarding";
 
 const Dashboard = () => {
-  return <div>Dashboard</div>;
+  return (
+    <div>
+      <Onboarding />
+    </div>
+  );
 };
 
 export default Dashboard;
