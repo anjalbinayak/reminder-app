@@ -1,14 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const Home = () => {
   const { user } = useAuth();
-  return (
-    <div>
-      Home
-      {JSON.stringify(user)}
-    </div>
-  );
+  const navigate = useNavigate();
+
+  return <div>Home</div>;
 };
 
 export default Home;
