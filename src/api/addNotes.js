@@ -1,7 +1,7 @@
 import { db } from "../firebase/firebase";
 import { collection, addDoc } from "firebase/firestore";
 
-const addNotes = async ({ uid, title, isPublic, body }) => {
+const addNote = async ({ uid, title, isPublic, body }) => {
   try {
     await addDoc(collection(db, "notes"), {
       user: uid,
@@ -13,4 +13,4 @@ const addNotes = async ({ uid, title, isPublic, body }) => {
   } catch (err) {}
 };
 
-export { addNotes };
+export { addNote };
