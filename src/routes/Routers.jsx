@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import AddNoteForm from "../components/AddNoteForm";
 import AddReminder from "../components/AddReminderForm";
 import Dashboard from "../components/Dashboard";
 import Events from "../components/Events";
@@ -20,7 +21,10 @@ const Routers = () => {
 
       <Route path="/profile" element={<Profile />} />
       <Route path="/events" element={<Events />} />
+
       <Route path="/notes" element={<Notes />} />
+      <Route path="/notes/add" element={<AddNoteForm />} />
+
       <Route path="/login" element={<Login />} />
       <Route path="/logout" element={<Logout />} />
     </Routes>
