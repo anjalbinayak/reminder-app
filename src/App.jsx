@@ -1,29 +1,29 @@
 import { useEffect, useState } from "react";
-import { addReminder } from "./api/addReminder";
 
+import { BrowserRouter as Router, Link } from "react-router-dom";
 import "./App.css";
 import {
   getTimeLeftForAnniversaryThisYear,
   getDatesForReminder,
 } from "./utility/date";
 
-import {
-  collection,
-  query,
-  orderBy,
-  onSnapshot,
-  arrayRemove,
-} from "firebase/firestore";
-import { db } from "./firebase";
+import { collection, query, onSnapshot, where } from "firebase/firestore";
+import { db } from "./firebase/firebase";
+
+import useAuth from "./hooks/useAuth";
+import Routers from "./routes/Routers";
 
 function App() {
   const [reminders, setReminders] = useState([]);
-  const [title, setTitle] = useState("");
-  const [dateOfReminder, setDateOfReminder] = useState("");
 
-  const [remindBefore, setRemindBefore] = useState(1);
+  const { user } = useAuth();
+
   const refreshData = () => {
-    const q = collection(db, "reminders");
+    if (!user) {
+      setReminders([]);
+      return;
+    }
+    const q = query(collection(db, "reminders"), where("user", "==", user.uid));
 
     onSnapshot(q, (querySnapchot) => {
       let ar = [];
@@ -35,60 +35,20 @@ function App() {
   };
   useEffect(() => {
     refreshData();
-  });
+  }, [user]);
 
-  const handleReminderAdd = () => {
-    addReminder({
-      title,
-      date: dateOfReminder,
-
-      remindBefore,
-    });
-    setTitle("");
-    setDateOfReminder("");
-    setRemindBefore(1);
-  };
   return (
-    <div className="App">
-      <input
-        type="text"
-        placeholder="title"
-        onChange={(e) => setTitle(e.target.value)}
-        value={title}
-      />{" "}
-      <br />
-      <input
-        type="date"
-        placeholder="Date"
-        value={dateOfReminder}
-        onChange={(e) => setDateOfReminder(e.target.value)}
-      />
-      <br />
-      <input
-        type="number"
-        value={remindBefore}
-        placeholder={`Remind before __ days`}
-        onChange={(e) => setRemindBefore(e.target.value)}
-        min="1"
-      />
-      <button disabled={!dateOfReminder} onClick={() => handleReminderAdd()}>
-        Add
-      </button>
-      <hr />
-      {getDatesForReminder(reminders).map((reminder) => (
-        <div key={reminder.id}>
-          <b>{reminder.title}</b> {reminder.date}
-          <small>
-            {" "}
-            {" " +
-              getTimeLeftForAnniversaryThisYear(reminder.date).days +
-              "day(s) left"}
-          </small>
-          <hr />
-          <br />
-        </div>
-      ))}
-    </div>
+    <Router>
+      <div className="App">
+        <Link to="/">Home</Link>
+        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/logout">Logout</Link>
+        <Link to="/login">Login</Link>
+        <Routers />
+
+        {JSON.stringify(user)}
+      </div>
+    </Router>
   );
 }
 

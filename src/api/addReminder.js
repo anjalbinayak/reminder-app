@@ -1,9 +1,10 @@
-import { db } from "../firebase";
+import { db } from "../firebase/firebase";
 import { collection, addDoc } from "firebase/firestore";
 
-const addReminder = async ({ title, date, remindBefore }) => {
+const addReminder = async ({ uid, title, date, remindBefore }) => {
   try {
     await addDoc(collection(db, "reminders"), {
+      user: uid,
       title,
       date,
       remindBefore,
